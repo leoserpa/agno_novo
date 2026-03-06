@@ -37,6 +37,5 @@ agente_reviewer = Agent(
         "  - O desenvolvedor demonstra saber POO, Padrões de Projeto ou Funções Puras?",
         "Seja extremamente didático e retorne as vulnerabilidades ou forças técnicas do código que encontrar.",
     ],
-    show_tool_calls=True,
     markdown=True,
 )

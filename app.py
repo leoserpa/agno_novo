@@ -21,7 +21,8 @@ with st.sidebar:
     st.markdown("---")
 
     if st.button("Limpar Histórico", use_container_width=True):
-        agente_time.memory.clear()
+        import uuid
+        agente_time.session_id = str(uuid.uuid4())
         st.session_state.messages = []
         st.rerun()
 

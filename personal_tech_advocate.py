@@ -11,14 +11,15 @@ desenvolvedor, focado em vagas de Análise e Ciência de Dados.
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
 from agno.models.google import Gemini
+from agno.team import Team
 from agno.tools.github import GithubTools
 from dotenv import load_dotenv
-
-from code_reviewer import agente_reviewer
 
 # Carrega as variáveis do arquivo .env (ex: GOOGLE_API_KEY e GITHUB_ACCESS_TOKEN)
 load_dotenv()
 
+from code_reviewer import agente_reviewer  # noqa: E402
+from product_manager import agente_pm  # noqa: E402
 
 # ============================================================
 # PASSO 2 — Configuração da Ferramenta Nativa (GithubTools)
@@ -56,26 +57,17 @@ agente_advocate = Agent(
 
     # --- Instruções de comportamento do agente ---
     instructions=[
-        "Você é o 'Personal Tech Advocate', um especialista em recrutar e apresentar "
-        "desenvolvedores para recrutadores de tecnologia.",
-        "Sua função principal é ser o tradutor oficial entre o mundo técnico da Ciência de Dados/IA "
-        "e os visitantes que buscam entender o valor dos projetos (recrutadores, gestores ou entusiastas).",
-        "Você deve ser profissional, didático, entusiasmado e focado em resultados.",
-        "IMPORTANTE: Você deve analisar EXCLUSIVAMENTE o portfólio do usuário solicitado.",
-        "Não analise, não busque e não mencione repositórios de outras pessoas.",
-        "Seu fluxo de trabalho DEVE ser:",
-        "  1. Buscar a lista de repositórios do usuário solicitado.",
-        "  2. Escolher os 3 repositórios mais focados em Dados/Python/SQL.",
-        "  3. Ler o conteúdo do arquivo 'README.md' desses 3 repositórios "
-        "     para entender profundamente a qualidade do código e da documentação.",
-        "Com base em toda essa investigação, gere um relatório profissional "
-        "e persuasivo 'vendendo' o perfil candidato para uma vaga de Dados.",
-        "Organize o relatório com seções claras: Resumo do Perfil, "
-        "Competências Técnicas, Análise da Documentação (baseada nos READMEs que você leu) "
-        "e Projetos de Destaque.",
-        "Use um tom confiante e positivo.",
-        "NOTA: Peça AJUDA ao seu Sênior Code Reviewer sempre que precisar de "
-        "uma auditoria avançada na qualidade do código interno das pastas dos repositórios."
+        "Você é o 'Personal Tech Advocate', um Líder Recrutador focado na área de Dados.",
+        "Você não precisa ler código fonte, e também não precisa ler manualmente os READMEs."
+        "Você DEVE chamar o seu 'Product Manager' para ler a documentação do repositório (Business Value) "
+        "e também o seu 'Senior Code Reviewer' para auditar a qualidade real do código do candidato (Technical Hard Skills).",
+        "Após os dois especialistas retornarem os relatórios detalhados para você, SUA MISSÃO é "
+        "unificar tudo num relatório impecável e extremamente bem-escrito, vendendo o candidato "
+        "para uma vaga na área de Análise de Dados.",
+        "Organize o Resumo Executivo contemplando: "
+        "- Forças de Produto (O que o PM avaliou no README e na comunicação). "
+        "- Forças de Engenharia (A pureza e arquitetura do código que o Code Reviewer auditou).",
+        "Use um tom confiante, elogioso e executivo de alta escalão.",
     ],
 
     # --- Configurações de exibição ---
@@ -83,21 +75,21 @@ agente_advocate = Agent(
     debug_mode=True, # Deixa isso True para você ver ele lendo os arquivos!
 )
 
-agente_time = Agent(
+agente_time = Team(
     name="Time de Tech Recruitment",
-    # Passamos a lista de Sub-Agentes que o Agno vai gerenciar:
-    team=[agente_reviewer, agente_advocate],
-    # Memória atrelada ao time e não a um membro único:
+    # Passamos os 3 Agentes que vão se comunicar sob a gestão do Agno:
+    members=[agente_reviewer, agente_pm, agente_advocate],
+    # Memória atrelada ao time (banco base unificado):
     db=SqliteDb(db_file="agente_memoria.db"),
     session_id="time_analise_rh_leoserpa",
     add_history_to_context=True,
     model=Gemini(id="gemini-2.5-flash"),
     instructions=[
-        "Você é um gerente de uma equipe especializada.",
-        "Se o usuário pedir análises técnicas pesadas de código limpo, pastas ou funções python, delegue ao 'Senior Code Reviewer'.",
-        "Se o usuário pedir relatórios focados em vendas, recrutamento ou resumos de READMEs e portfólios, delegue ao 'Personal Tech Advocate'."
+        "Você é um gerente de uma equipe especializada de Avaliação Tecnológica.",
+        "1. Se a pergunta for ligada à qualidade de Python, padrões e arquivos de código pesado, DELEGUE obrigatoriamente para o 'Senior Code Reviewer'.",
+        "2. Se a avaliação focar na Documentação, Resolução de Problemas, Storytelling e leitura de READMEs, DELEGUE para a 'Product Manager'.",
+        "3. Se o pedido final for redigir E-mails de RH rápidos ou mesclar resultados de código com relatórios de Negócio, DELEGUE ao 'Personal Tech Advocate'."
     ],
-    show_tool_calls=True,
     markdown=True,
 )
 
