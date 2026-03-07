@@ -1,6 +1,10 @@
 import streamlit as st
+from dotenv import load_dotenv
 
-from personal_tech_advocate import agente_time
+# Força o recarregamento em tempo real do .env no Hot Reload do Streamlit
+load_dotenv(override=True)
+
+from personal_tech_advocate import agente_time  # noqa: E402
 
 # Configurações da página
 st.set_page_config(
