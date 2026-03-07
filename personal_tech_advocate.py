@@ -10,7 +10,7 @@ desenvolvedor, focado em vagas de Análise e Ciência de Dados.
 # ============================================================
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
-from agno.models.google import Gemini
+from agno.models.groq import Groq
 from agno.team import Team
 from agno.tools.github import GithubTools
 from dotenv import load_dotenv
@@ -45,7 +45,7 @@ agente_advocate = Agent(
     role="Headhunter Especializado (Líder Comercial)",
 
     # --- Modelo de IA ---
-    model=Gemini(id="gemini-2.5-flash"),
+    model=Groq(id="llama-3.1-8b-instant"),
 
     # --- Memória (Para ter um Chat Contínuo) ---
     db=SqliteDb(db_file="agente_memoria.db"),
@@ -83,7 +83,7 @@ agente_time = Team(
     db=SqliteDb(db_file="agente_memoria.db"),
     session_id="time_analise_rh_leoserpa",
     add_history_to_context=True,
-    model=Gemini(id="gemini-2.5-flash"),
+    model=Groq(id="llama-3.1-8b-instant"),
     stream_member_events=False,
     instructions=[
         "Você é o Gerente de uma equipe especializada de Avaliação Tecnológica.",
