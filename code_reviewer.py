@@ -5,7 +5,7 @@ de código que estão dentro do repositório do desenvolvedor.
 """
 
 from agno.agent import Agent
-from agno.models.groq import Groq
+from agno.models.google import Gemini
 from agno.tools.github import GithubTools
 
 # Ferramentas focadas em ler pastas e olhar o código fonte real
@@ -20,7 +20,7 @@ ferramenta_auditoria_github = GithubTools(
 agente_reviewer = Agent(
     name="Senior Code Reviewer",
     role="Auditor de Qualidade de Código (Software Engineering)",
-    model=Groq(id="llama-3.1-8b-instant"),
+    model=Gemini(id="gemini-2.5-flash"),
     tools=[ferramenta_auditoria_github],
 
     instructions=[

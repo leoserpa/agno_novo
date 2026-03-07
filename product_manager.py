@@ -5,7 +5,7 @@ Sua principal função é ler os READMEs e justificar o impacto do projeto para 
 """
 
 from agno.agent import Agent
-from agno.models.groq import Groq
+from agno.models.google import Gemini
 from agno.tools.github import GithubTools
 
 # Ferramentas focadas em ler contexto e documentações raiz
@@ -19,7 +19,7 @@ ferramenta_pm_github = GithubTools(
 agente_pm = Agent(
     name="Product Manager (Negócios)",
     role="Avaliador de Valor de Negócio e Storytelling",
-    model=Groq(id="llama-3.1-8b-instant"),
+    model=Gemini(id="gemini-2.5-flash"),
     tools=[ferramenta_pm_github],
 
     instructions=[

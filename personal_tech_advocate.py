@@ -10,7 +10,7 @@ desenvolvedor, focado em vagas de Análise e Ciência de Dados.
 # ============================================================
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
-from agno.models.groq import Groq
+from agno.models.google import Gemini
 from agno.team import Team
 from agno.tools.github import GithubTools
 from dotenv import load_dotenv
@@ -45,10 +45,10 @@ agente_advocate = Agent(
     role="Headhunter Especializado (Líder Comercial)",
 
     # --- Modelo de IA ---
-    model=Groq(id="llama-3.1-8b-instant"),
+    model=Gemini(id="gemini-2.5-flash"),
 
     # --- Memória (Para ter um Chat Contínuo) ---
-    db=SqliteDb(db_file="agente_memoria.db"),
+    db=SqliteDb(db_file="memoria_groq.db"),
     session_id="analise_rh_leoserpa",
     add_history_to_context=True,
 
@@ -80,10 +80,10 @@ agente_time = Team(
     # Passamos os 3 Agentes que vão se comunicar sob a gestão do Agno:
     members=[agente_reviewer, agente_pm, agente_advocate],
     # Memória atrelada ao time (banco base unificado):
-    db=SqliteDb(db_file="agente_memoria.db"),
+    db=SqliteDb(db_file="memoria_groq.db"),
     session_id="time_analise_rh_leoserpa",
     add_history_to_context=True,
-    model=Groq(id="llama-3.1-8b-instant"),
+    model=Gemini(id="gemini-2.5-flash"),
     stream_member_events=False,
     instructions=[
         "Você é o Gerente de uma equipe especializada de Avaliação Tecnológica.",
