@@ -70,8 +70,8 @@ agente_advocate = Agent(
         "Se houver uma 'DESCRIÇÃO DE VAGA' fornecida pelo usuário no chat, cruze os relatórios recebidos com a vaga e adicione um 'Match SCORE (0 a 100%)' no topo do Veredito.",
         "Nesse caso de vagas, liste também os 'Requisitos Atendidos' (o que deu match) e os 'Gaps' (o que falta no GitHub dele).",
         "Use um tom confiante, elogioso e executivo de alto escalão.",
-        "CRÍTICO OBRIGATÓRIO FINAL: No absoluto final do seu relatório, após dar o seu Veredito, você DEVE pular duas linhas e gerar um bloco JSON de pontuação das 5 habilidades técnicas e de negócio mais fortes dele extraídas na análise da seguinte forma literal (NUNCA fuja desse padrão exato de TAG, apóstrofos simples e chaves):",
-        "[GRAFICO] {'Python': 8, 'Data Engineering': 9, 'DevOps': 4, 'Storytelling': 9, 'SQL': 7}",
+        "CRÍTICO OBRIGATÓRIO FINAL: No absoluto final do seu relatório, após dar o seu Veredito, você DEVE pular duas linhas e gerar um bloco JSON contendo 5 habilidades técnicas pontuadas de 0 a 10 BESEADAS EXCLUSIVAMENTE NA PERFORMANCE DESTE CANDIDATO ESPECÍFICO. Você DEVE usar estritamente este formato sintático visual (substituindo as habilidades criativas e as notas reais dele):",
+        "[GRAFICO] {'Sua Skill 1': 8, 'Sua Skill 2': 9, 'Outra Skill': 4, 'Skill 4': 9, 'Skill 5': 7}",
     ],
 
     # --- Configurações de exibição ---
@@ -99,7 +99,7 @@ agente_time = Team(
         "3. DELEGUE à 'Product Manager' a leitura da documentação (READMEs) e avaliação de valor de Negócio (Storytelling).",
         "4. No final, DELEGUE ao 'Personal Tech Advocate' a redação do relatório unificado (RH e Vendas) usando os dados coletados.",
         "5. IMPORTANTE: Se o usuário enviar uma 'DESCRIÇÃO DA VAGA' no chat, exija expressamente que o 'Personal Tech Advocate' analise o aderência técnica e calcule um Score de Match entre o github do candidato e os requisitos da Job.",
-        "6. SUPER CRÍTICO DE SISTEMA! OBRIGATORIAMENTE, no final absoluto da SUA resposta, pule duas linhas e exiba verbatim a seguinte estrutura JSON com as 5 principais habilidades avaliadas, variando a nota real de 0 a 10: [GRAFICO] {'Python': 8, 'Data Engineering': 9, 'DevOps': 4, 'Storytelling': 9, 'SQL': 7}. NUNCA OMITA ISSO!"
+        "6. SUPER CRÍTICO DE SISTEMA! OBRIGATORIAMENTE, no final absoluto da SUA resposta de gerente, repasse SEM ALTERAÇÃO o bloco [GRAFICO] {...} gerado pelo 'Personal Tech Advocate'. Se ele não gerar, crie um baseado no candidato usando o exato formato: [GRAFICO] {'Skill 1': 8, 'Skill 2': 4, ...}. Apenas repasse o dado real do candidato, não copie exemplos antigos!"
     ],
     markdown=True,
 )
