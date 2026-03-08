@@ -1,5 +1,18 @@
+import markdown
 import streamlit as st
 from dotenv import load_dotenv
+from fpdf import FPDF
+
+
+def criar_pdf(texto_markdown):
+    html = markdown.markdown(texto_markdown, extensions=['extra'])
+    # Codificação segura contra erro de glifos unicode no motor FPDF2 Default
+    html_safe = html.encode('latin-1', 'ignore').decode('latin-1')
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.write_html(html_safe)
+    return bytes(pdf.output()) # Formato exigido para Download no Streamlit
+
 
 # Força o recarregamento em tempo real do .env no Hot Reload do Streamlit
 load_dotenv(override=True)
@@ -52,6 +65,18 @@ for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
+# Render botão de download para a última análise feita pelo Agente (se houver)
+erros_de_bem_vindo = ["Olá! Digite o nome de usuário do GitHub", "Olá!"]
+if st.session_state.messages and st.session_state.messages[-1]["role"] == "assistant":
+    ultimo_texto = st.session_state.messages[-1]["content"]
+    if not any(ultimo_texto.startswith(b) for b in erros_de_bem_vindo):
+        st.download_button(
+            label="📥 Baixar Última Análise em PDF",
+            data=criar_pdf(ultimo_texto),
+            file_name="Analise_Tech_Advocate.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
 
 # Campo de Prompt (Chat Box)
 if prompt := st.chat_input("Digite o @username do GitHub ou faça perguntas..."):
