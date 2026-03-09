@@ -73,6 +73,7 @@ agente_time.session_id = st.session_state.session_id
 def preparar_grafico_e_texto(texto_completo):
     fig = None
     entrevista_dados = None
+    email_dados = None
 
     # Procura a tag mágica e extrai o dicionário python que o LLM cuspiu. Ex: {'Python': 8, 'SQL': 4}
     match_grafico = re.search(r'\[GRAFICO\]\s*(\{.*?\})', texto_completo, re.DOTALL)
@@ -117,14 +118,24 @@ def preparar_grafico_e_texto(texto_completo):
         except Exception:
             pass
 
-    return texto_completo.strip(), fig, entrevista_dados
+    # Procura o Cold Email
+    match_email = re.search(r'\[EMAIL\]\s*(\{.*?\})', texto_completo, re.DOTALL)
+    if match_email:
+        try:
+            json_str = match_email.group(1).replace("'", '"')
+            email_dados = json.loads(json_str)
+            texto_completo = re.sub(r'\[EMAIL\]\s*\{.*?\}', '', texto_completo, flags=re.DOTALL)
+        except Exception:
+            pass
+
+    return texto_completo.strip(), fig, entrevista_dados, email_dados
 
 # Renderiza todo o histórico salvo na tela a cada re-load
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         if msg["role"] == "assistant":
             # Extrai e exibe o plot se houver, e retorna o texto bonitinho
-            texto_formatado, fig, entrevista_dados = preparar_grafico_e_texto(msg["content"])
+            texto_formatado, fig, entrevista_dados, email_dados = preparar_grafico_e_texto(msg["content"])
             st.markdown(texto_formatado)
 
             if fig:
@@ -144,6 +155,16 @@ for msg in st.session_state.messages:
 
                         st.markdown(f"**{i+1}. {p}**")
                         st.info(f"💡 **Gabarito Esperado:** {r}")
+
+            if email_dados and isinstance(email_dados, dict):
+                assunto = email_dados.get('assunto', email_dados.get('Assunto', 'Oportunidade de Entrevista'))
+                corpo = email_dados.get('corpo', email_dados.get('Corpo', 'Conteúdo do email indisponível. LLM falhou.'))
+
+                st.markdown("---")
+                st.subheader("✉️ Automação de Cold E-mail")
+                st.markdown("A IA rascunhou uma abordagem irresistível para o LinkedIn ou E-mail da pessoa. Copie e cole:")
+                st.text_input("Assunto sugerido:", value=assunto, disabled=False)
+                st.text_area("Pitch de Abordagem:", value=corpo, height=250, disabled=False)
         else:
             st.markdown(msg["content"])
 
@@ -151,7 +172,7 @@ for msg in st.session_state.messages:
 erros_de_bem_vindo = ["Olá! Digite o nome de usuário do GitHub", "Olá!"]
 if st.session_state.messages and st.session_state.messages[-1]["role"] == "assistant":
     ultimo_texto_bruto = st.session_state.messages[-1]["content"]
-    ultimo_texto_limpo, _, _ = preparar_grafico_e_texto(ultimo_texto_bruto)
+    ultimo_texto_limpo, _, _, _ = preparar_grafico_e_texto(ultimo_texto_bruto)
 
     if not any(ultimo_texto_bruto.startswith(b) for b in erros_de_bem_vindo):
         st.download_button(
