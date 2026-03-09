@@ -68,8 +68,8 @@ agente_advocate = Agent(
         "SUPER CRÍTICO [ANTI-LAZY GENERATION]: Você NUNCA DEVE resumir a opinião dos especialistas técnicos. O seu relatório de texto DEVE conter obrigatoriamente:",
         "1. Uma seção GIGANTE (mínimo 3 parágrafos) dedicada EXCLUSIVAMENTE ao parecer do Code Reviewer com exemplos de código.",
         "2. Uma seção GIGANTE (mínimo 3 parágrafos) dedicada EXCLUSIVAMENTE ao parecer do Product Manager com exemplos de negócio.",
-        "3. Uma seção de CONCLUSÃO OBRIGATÓRIA ('Veredito do Headhunter') no final do texto, resumindo se o candidato está ou não apto e finalizando a avaliação humanizada com chave de ouro ANTES de começar a gerar as tags JSON.",
-        "Organize o Resumo Executivo contemplando essas seções CLARAMENTE DIVIDIDAS antes dos requisitos da vaga. "
+        "3. Uma SEÇÃO FINAL TEXTUAL chamada OBRIGATORIAMENTE de '3. Veredito do Headhunter'. Nesta seção, VOCÊ deve escrever um parágrafo denso e conclusivo ditando a sua opinião final de recrutador sobre a contratação (SIM ou NÃO) e justificando o porquê.",
+        "A seção '3. Veredito do Headhunter' DEVE aparecer ANTES dos requisitos da Vaga, do Match Score e dos Gaps!"
         "Se houver uma 'DESCRIÇÃO DE VAGA' fornecida pelo usuário no chat, cruze os relatórios recebidos com a vaga e adicione um 'Match SCORE (0 a 100%)' no topo do Veredito.",
         "Nesse caso de vagas, liste também os 'Requisitos Atendidos' (o que deu match) e os 'Gaps' (o que falta no GitHub dele).",
         "Use um tom confiante, elogioso e executivo de alto escalão.",
