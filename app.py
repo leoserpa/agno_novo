@@ -1,4 +1,4 @@
-import json
+import ast
 import re
 
 import markdown
@@ -75,11 +75,15 @@ def preparar_grafico_e_texto(texto_completo):
     entrevista_dados = None
     email_dados = None
 
-    # Procura a tag mágica e extrai o dicionário python que o LLM cuspiu. Ex: {'Python': 8, 'SQL': 4}
-    match_grafico = re.search(r'\[GRAFICO\]\s*(\{.*?\})', texto_completo, re.DOTALL)
+    # Procura a tag mágica e limpa crases Markdown de LLM se houver (ex: ```json)
+    texto_limpo_busca = texto_completo.replace("```json\n", "").replace("```json", "").replace("```\n", "").replace("```", "")
+
+    # GRAFICO
+    match_grafico = re.search(r'\[GRAFICO\]\s*(\{.*?\})', texto_limpo_busca, re.DOTALL)
     if match_grafico:
         try:
-            dados_dict = json.loads(match_grafico.group(1).replace("'", '"')) # Parseia de JSON String para Objeto Python Puro
+            # ast.literal_eval entende strings puras python como {'Teste': 10}, contornando o inferno das aspas que quebram o json.loads
+            dados_dict = ast.literal_eval(match_grafico.group(1).strip())
 
             # Montagem estrutural para o Plotly
             categorias = list(dados_dict.keys())
@@ -108,25 +112,27 @@ def preparar_grafico_e_texto(texto_completo):
         except Exception:
             pass
 
-    # Procura os Cards de Entrevista
-    match_entrevista = re.search(r'\[ENTREVISTA\]\s*(\[.*?\])', texto_completo, re.DOTALL)
+    # ENTREVISTA
+    match_entrevista = re.search(r'\[ENTREVISTA\]\s*(\[.*?\])', texto_limpo_busca, re.DOTALL)
     if match_entrevista:
         try:
-            json_str = match_entrevista.group(1)
-            entrevista_dados = json.loads(json_str)
+            entrevista_dados = ast.literal_eval(match_entrevista.group(1).strip())
             texto_completo = re.sub(r'\[ENTREVISTA\]\s*\[.*?\]', '', texto_completo, flags=re.DOTALL)
         except Exception:
             pass
 
-    # Procura o Cold Email
-    match_email = re.search(r'\[EMAIL\]\s*(\{.*?\})', texto_completo, re.DOTALL)
+    # EMAIL
+    match_email = re.search(r'\[EMAIL\]\s*(\{.*?\})', texto_limpo_busca, re.DOTALL)
     if match_email:
         try:
-            json_str = match_email.group(1).replace("'", '"')
-            email_dados = json.loads(json_str)
+            email_dados = ast.literal_eval(match_email.group(1).strip())
             texto_completo = re.sub(r'\[EMAIL\]\s*\{.*?\}', '', texto_completo, flags=re.DOTALL)
         except Exception:
             pass
+
+    # Corta o grafico brutal também caso tenha sobrado fragmentos Markdown
+    texto_completo = re.sub(r'\[GRAFICO\]\s*\{.*?\}', '', texto_completo, flags=re.DOTALL)
+    texto_completo = re.sub(r'\[GRAFICO\].*?\{.*?\}', '', texto_completo, flags=re.DOTALL)
 
     return texto_completo.strip(), fig, entrevista_dados, email_dados
 
@@ -146,9 +152,11 @@ for msg in st.session_state.messages:
                     st.markdown("Use estas perguntas exclusivas filtradas dos projetos do candidato para testá-lo em entrevistas técnicas:")
                     for i, card in enumerate(entrevista_dados):
                         if isinstance(card, dict):
-                            # Tolerância a variações do LLM (maiúsculas, minúsculas ou sinônimos base)
-                            p = card.get('pergunta', card.get('Pergunta', card.get('question', 'Pergunta não encontrada')))
-                            r = card.get('resposta', card.get('Resposta', card.get('gabarito', card.get('Gabarito', 'Gabarito não fornecido pelo Agente'))))
+                            valores = list(card.values())
+                            # Abordagem Cega a Nomes de Chaves (Não importa se a IA inventou a chave 'Resposta do gabarito')
+                            # Pega a posição 0 pra pergunta e 1 pra resposta.
+                            p = valores[0] if len(valores) > 0 else "Pergunta não encontrada."
+                            r = valores[1] if len(valores) > 1 else "Gabarito omitido pelo agente."
                         else:
                             p = str(card)
                             r = "Formato de dicionário inválido retornado pela IA. O gabarito foi fundido na pergunta."
@@ -157,8 +165,9 @@ for msg in st.session_state.messages:
                         st.info(f"💡 **Gabarito Esperado:** {r}")
 
             if email_dados and isinstance(email_dados, dict):
-                assunto = email_dados.get('assunto', email_dados.get('Assunto', 'Oportunidade de Entrevista'))
-                corpo = email_dados.get('corpo', email_dados.get('Corpo', 'Conteúdo do email indisponível. LLM falhou.'))
+                valores_email = list(email_dados.values())
+                assunto = valores_email[0] if len(valores_email) > 0 else "Oportunidade de Entrevista Tech"
+                corpo = valores_email[1] if len(valores_email) > 1 else "Conteúdo do email indisponível. LLM falhou."
 
                 st.markdown("---")
                 st.subheader("✉️ Automação de Cold E-mail")
