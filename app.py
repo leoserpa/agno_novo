@@ -71,11 +71,14 @@ agente_time.session_id = st.session_state.session_id
 
 # Helper para renderizar radar chart:
 def preparar_grafico_e_texto(texto_completo):
+    fig = None
+    entrevista_dados = None
+
     # Procura a tag mágica e extrai o dicionário python que o LLM cuspiu. Ex: {'Python': 8, 'SQL': 4}
-    match = re.search(r'\[GRAFICO\]\s*(\{.*?\})', texto_completo, re.DOTALL)
-    if match:
+    match_grafico = re.search(r'\[GRAFICO\]\s*(\{.*?\})', texto_completo, re.DOTALL)
+    if match_grafico:
         try:
-            dados_dict = json.loads(match.group(1).replace("'", '"')) # Parseia de JSON String para Objeto Python Puro
+            dados_dict = json.loads(match_grafico.group(1).replace("'", '"')) # Parseia de JSON String para Objeto Python Puro
 
             # Montagem estrutural para o Plotly
             categorias = list(dados_dict.keys())
@@ -100,21 +103,39 @@ def preparar_grafico_e_texto(texto_completo):
             )
 
             # Corta a parte matemática feia pra não poluir o visual do texto no Chat
-            texto_limpo = re.sub(r'\[GRAFICO\]\s*\{.*?\}', '', texto_completo, flags=re.DOTALL)
-            return texto_limpo, fig
+            texto_completo = re.sub(r'\[GRAFICO\]\s*\{.*?\}', '', texto_completo, flags=re.DOTALL)
         except Exception:
-            return texto_completo, None # Retorna limpo se der problema de Parsing
-    return texto_completo, None
+            pass
+
+    # Procura os Cards de Entrevista
+    match_entrevista = re.search(r'\[ENTREVISTA\]\s*(\[.*?\])', texto_completo, re.DOTALL)
+    if match_entrevista:
+        try:
+            json_str = match_entrevista.group(1)
+            entrevista_dados = json.loads(json_str)
+            texto_completo = re.sub(r'\[ENTREVISTA\]\s*\[.*?\]', '', texto_completo, flags=re.DOTALL)
+        except Exception:
+            pass
+
+    return texto_completo.strip(), fig, entrevista_dados
 
 # Renderiza todo o histórico salvo na tela a cada re-load
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         if msg["role"] == "assistant":
             # Extrai e exibe o plot se houver, e retorna o texto bonitinho
-            texto_formatado, fig = preparar_grafico_e_texto(msg["content"])
+            texto_formatado, fig, entrevista_dados = preparar_grafico_e_texto(msg["content"])
             st.markdown(texto_formatado)
+
             if fig:
                 st.plotly_chart(fig, use_container_width=True)
+
+            if entrevista_dados and isinstance(entrevista_dados, list):
+                with st.expander("🃏 Cards de Entrevista Técnica (Gabarito)"):
+                    st.markdown("Use estas perguntas exclusivas filtradas dos projetos do candidato para testá-lo em entrevistas técnicas:")
+                    for i, card in enumerate(entrevista_dados):
+                        st.markdown(f"**{i+1}. {card.get('pergunta', 'Pergunta')}**")
+                        st.info(f"💡 **Gabarito Esperado:** {card.get('resposta', 'Resposta')}")
         else:
             st.markdown(msg["content"])
 
@@ -122,7 +143,7 @@ for msg in st.session_state.messages:
 erros_de_bem_vindo = ["Olá! Digite o nome de usuário do GitHub", "Olá!"]
 if st.session_state.messages and st.session_state.messages[-1]["role"] == "assistant":
     ultimo_texto_bruto = st.session_state.messages[-1]["content"]
-    ultimo_texto_limpo, _ = preparar_grafico_e_texto(ultimo_texto_bruto)
+    ultimo_texto_limpo, _, _ = preparar_grafico_e_texto(ultimo_texto_bruto)
 
     if not any(ultimo_texto_bruto.startswith(b) for b in erros_de_bem_vindo):
         st.download_button(
