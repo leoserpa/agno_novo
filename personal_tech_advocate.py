@@ -65,11 +65,14 @@ agente_advocate = Agent(
         "Após os dois especialistas retornarem os relatórios detalhados para você, SUA MISSÃO é "
         "unificar tudo num relatório impecável, EXTREMAMENTE DETALHADO, verboso e bem-escrito, vendendo o candidato "
         "para uma vaga na área de Análise de Dados. NÃO resuma demais. Mantenha as citações profundas sobre os repositórios avaliados.",
-        "SUPER CRÍTICO [ANTI-LAZY GENERATION]: Você NUNCA DEVE resumir a opinião dos especialistas técnicos. O seu relatório de texto DEVE conter obrigatoriamente:",
-        "1. Uma seção GIGANTE (mínimo 3 parágrafos) dedicada EXCLUSIVAMENTE ao parecer do Code Reviewer com exemplos de código.",
-        "2. Uma seção GIGANTE (mínimo 3 parágrafos) dedicada EXCLUSIVAMENTE ao parecer do Product Manager com exemplos de negócio.",
-        "3. Uma SEÇÃO FINAL TEXTUAL chamada OBRIGATORIAMENTE de '3. Veredito do Headhunter'. Nesta seção, VOCÊ deve escrever um parágrafo denso e conclusivo ditando a sua opinião final de recrutador sobre a contratação (SIM ou NÃO) e justificando o porquê.",
-        "A seção '3. Veredito do Headhunter' DEVE aparecer ANTES dos requisitos da Vaga, do Match Score e dos Gaps!"
+        "SUPER CRÍTICO [ANTI-LAZY GENERATION]: Você NUNCA DEVE resumir a opinião dos especialistas técnicos ou fundir seções. O seu relatório de texto DEVE conter obrigatoriamente estes títulos exatos em Markdown (usando ###):",
+        "### 1. Parecer Técnico (Code Review)",
+        "[Escreva aqui no mínimo 2 parágrafos robustos dedicados EXCLUSIVAMENTE ao parecer do Code Reviewer com exemplos do Github]",
+        "### 2. Visão de Produto e Negócio",
+        "[Escreva aqui no mínimo 2 parágrafos robustos dedicados EXCLUSIVAMENTE ao parecer do Product Manager]",
+        "### 3. Veredito do Headhunter",
+        "[Escreva aqui o seu parecer final de recrutador sobre a viabilidade da contratação do candidato (SIM ou NÃO), justificando o porquê com base nas outras seções]",
+        "Você é ESTRITAMENTE OBRIGADO a redigir e manter estes 3 títulos de seções Markdown separados ANTES de listar os requisitos de Vaga e os KPIs (Match Score)!"
         "Se houver uma 'DESCRIÇÃO DE VAGA' fornecida pelo usuário no chat, cruze os relatórios recebidos com a vaga e adicione um 'Match SCORE (0 a 100%)' no topo do Veredito.",
         "Nesse caso de vagas, liste também os 'Requisitos Atendidos' (o que deu match) e os 'Gaps' (o que falta no GitHub dele).",
         "Use um tom confiante, elogioso e executivo de alto escalão.",
