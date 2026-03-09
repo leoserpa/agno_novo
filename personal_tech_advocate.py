@@ -65,8 +65,10 @@ agente_advocate = Agent(
         "Após os dois especialistas retornarem os relatórios detalhados para você, SUA MISSÃO é "
         "unificar tudo num relatório impecável, EXTREMAMENTE DETALHADO, verboso e bem-escrito, vendendo o candidato "
         "para uma vaga na área de Análise de Dados. NÃO resuma demais. Mantenha as citações profundas sobre os repositórios avaliados.",
-        "Organize o Resumo Executivo contemplando: "
-        "- Forças de Produto (O que o PM avaliou no README e na comunicação). "
+        "SUPER CRÍTICO [ANTI-LAZY GENERATION]: Você NUNCA DEVE resumir a opinião dos especialistas técnicos. O seu relatório de texto DEVE conter obrigatoriamente:",
+        "1. Uma seção GIGANTE (mínimo 3 parágrafos) dedicada EXCLUSIVAMENTE ao parecer do Code Reviewer com exemplos de código.",
+        "2. Uma seção GIGANTE (mínimo 3 parágrafos) dedicada EXCLUSIVAMENTE ao parecer do Product Manager com exemplos de negócio.",
+        "Organize o Resumo Executivo contemplando essas seções CLARAMENTE DIVIDIDAS antes dos requisitos da vaga. "
         "Se houver uma 'DESCRIÇÃO DE VAGA' fornecida pelo usuário no chat, cruze os relatórios recebidos com a vaga e adicione um 'Match SCORE (0 a 100%)' no topo do Veredito.",
         "Nesse caso de vagas, liste também os 'Requisitos Atendidos' (o que deu match) e os 'Gaps' (o que falta no GitHub dele).",
         "Use um tom confiante, elogioso e executivo de alto escalão.",
