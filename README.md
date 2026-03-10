@@ -46,7 +46,7 @@ Instead of relying on basic LLM summaries, the system delegates the workload to 
 ## 🛠️ Technology Stack
 - **Framework:** [Agno](https://www.agno.com) (Multi-Agent orchestration)
 - **Frontend / UI:** [Streamlit](https://streamlit.io/)
-- **LLM Provider:** Google Gemini API (Flash-Lite / Pro) or Groq (Llama 3)
+- **LLM Provider:** Google Gemini API (Flash-Lite / Pro)
 - **Data Visualization:** Plotly (Spider/Radar Charts)
 - **PDF Engine:** fpdf2
 - **Package Manager:** `uv` (Fast Python dependency management)
@@ -112,7 +112,7 @@ Em vez de depender de resumos básicos de IA, o sistema delega o trabalho a uma 
 ## 🛠️ Tecnologias Utilizadas
 - **Framework:** [Agno](https://www.agno.com) (Orquestração Multi-Agente)
 - **Frontend / UI:** [Streamlit](https://streamlit.io/)
-- **Provedor de LLM:** Google Gemini API (Flash-Lite / Pro) ou Groq (Llama 3)
+- **Provedor de LLM:** Google Gemini API (Flash-Lite / Pro)
 - **Visualização de Dados:** Plotly (Spider/Radar Charts)
 - **Motor de PDF:** fpdf2
 - **Gerenciador de Pacotes:** `uv` (Gestão de dependências Python ultra-rápida)
